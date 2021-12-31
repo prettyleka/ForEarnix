@@ -1,9 +1,9 @@
-from SeleniumInfra.infra import SeleniumInfra
+from ForEarnix.SeleniumInfra.infra import SeleniumInfra
 
 
 class BasePage:
-    def __init__(self):
-        self.seleniumInfra = SeleniumInfra()
+    def __init__(self, seleniumInfra:SeleniumInfra):
+        self.seleniumInfra = seleniumInfra
 
     def moveToSite(self,link):
-        self.seleniumInfra.openSite("https://demo.nopcommerce.com/")
+        self.seleniumInfra.openSite(link=link)

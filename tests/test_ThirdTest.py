@@ -1,22 +1,17 @@
 import pytest as pytest
 from ForEarnix.tests.initPagesWithDriver import init
 
-class TestFirstTest:
+class TestThirdTest:
     def setup_class(self):
         self.initial = init.pageWithDriver()
 
-    def test_FirstTest(self):
+    def test_ThirdTest(self):
         self.initial.goTo.bp.moveToSite("https://demo.nopcommerce.com/")
-        self.initial.goTo.lp.writeInSearchField("macbook")
-        self.initial.goTo.lp.clickOnSearchBtn()
-        self.initial.goTo.pg.moveToProductDescription()
-        self.initial.goTo.pg.getShortDescription()
-        self.initial.goTo.pg.getFullDescription()
-        text = self.initial.goTo.pg.getPrice()
-        assert int(text.split("$")[1].replace(".00", "").replace(",", ""))>1000
-        assert text.__contains__("$")
+        self.initial.goTo.lp.hoverOnNotMobileTab("computers")
+        self.initial.goTo.lp.clickOnNitMobileComputerMenuBtns("notebooks")
+        sumHiddenIds=self.initial.goTo.pg.sumOfHiddenIds()
+        assert sumHiddenIds>5
         self.initial.goTo.seleniumInfra.close()
-
 
 
 if __name__ == '__main__':

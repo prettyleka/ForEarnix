@@ -4,12 +4,18 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.touch_actions import TouchActions
+from selenium.webdriver.common.action_chains import ActionChains as actions
 
 
 class SeleniumInfra:
     TIME_TO_WAIT=60
     def __init__(self):
-        self.driver = webdriver.Chrome(executable_path="/home/user/Downloads/chromedriver")
+        self.driver = webdriver.Chrome(executable_path="/Users/valerie/Downloads/chromedriver")
+
+    def hoverWithMouse(self, locatorType=None, locatorValue=None):
+        element_to_hover_over = self.findElementBy(locatorType=locatorType, locatorValue=locatorValue)
+        hover = actions(self.driver).move_to_element(to_element=element_to_hover_over)
+        hover.perform()
 
     def openSite(self, link):
         self.driver.get(link)
@@ -73,13 +79,17 @@ class SeleniumInfra:
             if not fromElement:
                 fromElement = self.driver
             if locatorType == "id":
-                elementList = fromElement.find_elements(locatorValue)
+                elementList = fromElement.find_elements_by_id(locatorValue)
+                print("[findElementListBy]- " + locatorValue + " has found by" + locatorType)
+                return elementList
             elif locatorType == "xpath":
-                elementList = fromElement.find_elements(locatorValue)
+                elementList = fromElement.find_elements_by_xpath(locatorValue)
+                print("[findElementListBy]- " + locatorValue + " has found by" + locatorType)
+                return elementList
             elif locatorType == "class_Name":
                 elementList = fromElement.find_elements(locatorValue)
-            print("[findElementListBy]- " + locatorValue + " has found by" + locatorType)
-            return elementList
+                print("[findElementListBy]- " + locatorValue + " has found by" + locatorType)
+                return elementList
         except:
             print("[findElementBy]- Element Does NOT FOUND with:" + str(locatorType) + " " + str(locatorValue) + "check this warning its can be a bug!!!")
 
@@ -97,7 +107,6 @@ class SeleniumInfra:
             element = self.findElementBy(locatorType=locatorType, locatorValue=locatorValue, fromElement=fromElement,
                                      timeToWait=timeToWait)
         try:
-            self.explicit_wait(element=element)
             element.click()
             print("[Pressed]- element " + str(locatorValue) + " is pressed")
         except Exception as e:
@@ -132,14 +141,10 @@ class SeleniumInfra:
 
 
     def getTextFromElement(self, locatorType=None, locatorValue=None, element=None, fromElement=None,
-                       timeToWait=TIME_TO_WAIT, getFromInput=False, webContext=False):
+                       timeToWait=TIME_TO_WAIT):
         if (not element):
-            if (not webContext):
-                element = self.findElementBy(locatorType=locatorType, locatorValue=locatorValue,
+            element = self.findElementBy(locatorType=locatorType, locatorValue=locatorValue,
                                          fromElement=fromElement, timeToWait=timeToWait)
-            else:
-                element = self.findElementInWeb(locatorType=locatorType, locatorValue=locatorValue, element=element,
-                                            fromElement=fromElement, timeToWait=timeToWait)
         try:
             text = element.text
             print("[getText]- get text: " + str(text) + " on " + str(locatorValue))
@@ -189,10 +194,7 @@ class SeleniumInfra:
 
         if myOwnLoop:
             self.scrollToCordinate(xStart=xStart, yStart=yStart, xEnd=xEnd, yEnd=yEnd)
-        else:
-            self.moveToElementUntilHeExist(locatorTypeToWait=locatorTypeToWait, locatorValueToWait=locatorValueToWait,
-                                           loopsToWait=loopsToWait, xStart=xStart, yStart=yStart, xEnd=xEnd, yEnd=yEnd)
-            self.screenShotForAllure()
+
 
     def scrollToCordinate(self, xStart=None, yStart=None, xEnd=None, yEnd=None, element=None):
         try:
